@@ -27,7 +27,7 @@ def chat():
 
     #Send full history to ollama
 
-    response=client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role":"system", "content":"You are a helpful AI assistant. Be concise and clear"},
+    response=client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role":"system", "content":"You are a strategy consultant with deep expertise. So, be very structured, concise and clear"},
         ] + conversation_history
     )
 
