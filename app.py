@@ -9,6 +9,8 @@ app=Flask(__name__)
 
 client=Groq(api_key=os.getenv("GROQ_API_KEY"))
 
+index, chunks = load_and_index_data("consulting_data.xlsx")
+
 conversation_history=[]
 
 @app.route("/")
@@ -32,9 +34,13 @@ def chat():
 
     #Send full history to ollama
 
-    response=client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role":"system", "content":f"""You are a strategy consultant with deep expertise. So, be very structured, concise and clear. Answer questions only on the following context from our consulting knowledge base. If answer is not 
-    in the context, say that you do not have the information. Do not make up information.
+    response=client.chat.completions.create(model="llama-3.3-70b-versatile", 
+    messages=[{"role":"system", "content":f"""You are a strategy consultant with deep expertise. So, be very structured, concise and clear. Answer questions only on the following context from our consulting knowledge base. If answer is not 
+    in the context, say that you do not have the information. You have no other information. Do not make up information.
     
+    Rules you must follow:
+    1. only answer using information explicitly stated in the context
+    2. do not infer or interpret or make up anything
     Context: {context}"""},
         ] + conversation_history, temperature=0
     )
