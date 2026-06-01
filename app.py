@@ -36,7 +36,7 @@ def chat():
     in the context, say that you do not have the information. Do not make up information.
     
     Context: {context}"""},
-        ] + conversation_history
+        ] + conversation_history, temperature=0
     )
 
     ai_response = response.choices[0].message.content
