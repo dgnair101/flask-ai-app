@@ -19,6 +19,11 @@ def home():
 def chat():
     user_message=request.json["message"]
 
+    relevant_chunks = retrieve_relevant_chunks(user_message,index,chunks)
+
+    context = "\n\n".join(relevant_chunks)
+
+
     #Add user msg to history
     conversation_history.append({
         "role":"user",
@@ -27,7 +32,10 @@ def chat():
 
     #Send full history to ollama
 
-    response=client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role":"system", "content":"You are a strategy consultant with deep expertise. So, be very structured, concise and clear"},
+    response=client.chat.completions.create(model="llama-3.3-70b-versatile", messages=[{"role":"system", "content":f"""You are a strategy consultant with deep expertise. So, be very structured, concise and clear. Answer questions only on the following context from our consulting knowledge base. If answer is not 
+    in the context, say that you do not have the information. Do not make up information.
+    
+    Context: {context}"""},
         ] + conversation_history
     )
 
