@@ -1,13 +1,14 @@
 import pandas as pd 
-from sentence_transformers import SentenceTransformer
+from fastembed import TextEmbedding
 import faiss
 import numpy as np
 
 # load embedding model
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+embedding_model = TextEmbedding('BAAI/bge-small-en-v1.5')
 
 def load_and_index_data(filepath):
     #read excel file
+    
     df=pd.read_excel(filepath)
 
     #combine topic and content into one string per row
@@ -17,7 +18,7 @@ def load_and_index_data(filepath):
         chunks.append(chunk)
     
     #convert chunks to embeddings
-    embeddings=embedding_model.encode(chunks)
+    embeddings=list(embedding_model.embed(chunks))
 
     #convert float 32 to faiss
     embeddings=np.array(embeddings).astype('float32')
