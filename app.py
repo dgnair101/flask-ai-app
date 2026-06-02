@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 from groq import Groq
 from dotenv import load_dotenv
+from rag import load_and_index_data,retrieve_relevant_chunks
 import os
 
 load_dotenv()

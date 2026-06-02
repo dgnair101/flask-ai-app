@@ -24,7 +24,7 @@ def load_and_index_data(filepath):
 
     #create faiss index
     dimension=embeddings.shape[1]
-    index=faiss.IndeFlatL2(dimension)
+    index=faiss.IndexFlatL2(dimension)
     index.add(embeddings)
 
     return index, chunks
@@ -35,8 +35,13 @@ def retrieve_relevant_chunks (query, index,chunks,top_k=3):
     query_embedding=np.array(query_embedding).astype('float32')
 
     #search for closest chunks
-    distance, indices = index.search(query_embedding, top_k)
-
+    distances, indices = index.search(query_embedding, top_k)
+    #debug
+    print("\n --rag debug-- ")
+    print(f"Query: {query}")
+    for i, (idx,dist) in enumerate(zip(indices[0],distances[0])):
+        print(f"Chunk {i+1} (distance: {dist:.3f}: {chunks[idx][:100]})")
+    print("---end debug---\n")    
     #return actual text chunks
     relevant_chunks = [chunks[i] for i in indices[0]]
     return relevant_chunks
